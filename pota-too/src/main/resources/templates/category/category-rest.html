@@ -124,13 +124,35 @@
  
  
  	$("#btnNew").click(function(e){
- 		actionType= "new";
-		 console.log("btn CLick");
-		 $("#h3Title").text("Add Category");
-		 $("#formAddEdit")[0].reset();
-		$("#modalAdd").modal("show");
-	});
+ 		actionType= 'new';
+ 		$.ajax({
+ 			url : '/rest/category/add',
+ 			type : 'get',
+ 			dataType : 'hmtl',
+ 			success : (response)=> {
+ 				console.log (response);
+ 				$('.modal-body').hmtl(response);
+ 				$("#h3Title").text("Add Category");
+ 				$("#formAddEdit")[0].reset();
+ 				$("#modalAdd").modal("show");
+ 				
+ 			},
+ 			error:(err)=>{
+ 				console.log(err);
+ 			}
+ 		
+ 		});
+ 		
  	
+ 	
+ 	function saveAction(e){
+ 		if (actionType === 'new'){
+ 			insertData();
+ 		}else {
+ 			updateData();
+ 		}
+ 		event.preventDefault();
+ 	}
  	
  	function insertData(){
  		let data ={
@@ -192,7 +214,7 @@
  		
  	}
  	
- 
+
  	/*
  	$("#saveBtn").click(function(){
  		let data ={
@@ -224,19 +246,34 @@
  	 */
  	function editAction(e){
  		
- 		actionType ="edit";
+ 		actionType ='edit';
  		$("#h3Title").text("Edit Category");
  		
  		$.ajax({
- 			url:'/api/category/edit/'+e.value,
+ 			url:'/rest/category/add',
  			type: 'get',
- 			contentType:'application/json',
+ 			contentType:'html',
  			success:(response)=>{
- 				$("#id").val(response.id)
- 				$("#name").val(response.name)
- 				$("#description").val(response.description)
+ 				$.ajax({
+ 					url : '/api/category/edit/'+e.value,
+ 					type : 'get',
+ 					contentType : 'application/json',
+ 					success : (result)=> {
+ 						console.log(result);
+ 						$('.modal-body').html(response);
+ 						$("#id").val(result[0].id)
+ 		 				$("#name").val(result[0].name)
+ 		 				$("#description").val(result[0].description)
+ 					
+ 					
+	 	 				$("#h3Title").text("Edit Category");
+	 					$("#modalAdd").modal("show");
+ 					},
+ 					error(err)=>{
+ 						console.log(err);
+ 					}
  				
- 				$("#modalAdd").modal("show");
+ 				});							
  			},
  			error: (err)=>{
  				console.log(err);
