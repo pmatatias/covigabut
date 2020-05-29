@@ -1,0 +1,54 @@
+
+<!-- Modal add -->
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title" id='h3Title'>Add Variant</h3>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="formAddEdit">
+					<div class="form-group">
+						<label for="title">Variant Id :</label><br> <input
+							class="form-control" type="text" readOnly
+							placeholder="generate id" id="varId">
+					</div>
+					<div class="form-group">
+						<label for="name">Category :</label><br> <select
+							id="category" class="custom-select" required>
+							<option value="">-Pilih-</option>
+						</select> </select>
+					</div>
+					<div class="form-group">
+						<label for="name">Name :</label><br> <input
+							class="form-control" type="text" placeholder="name" id="name">
+					</div>
+					<div class="form-group">
+						<label for="name">Description :</label><br> <input
+							class="form-control" type="text" placeholder="description" id="description">
+					</div>
+					<div class="form-group">
+						<input type="checkbox" id="active"> <label
+							class="form-check-label" for="exampleCheck1">is Active ?</label>
+					</div>
+
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button type="button" onclick="saveAction();"
+						class="btn btn-primary">Save</button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- /.modal -->
+

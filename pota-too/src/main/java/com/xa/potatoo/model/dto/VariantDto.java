@@ -3,7 +3,7 @@ package com.xa.potatoo.model.dto;
 public class VariantDto {
 	private Long varId;
 	private String name;
-	private String desc;
+	private String description;
 	private boolean active;
 	private Long cateId;
 	private String cateName;
@@ -13,11 +13,11 @@ public class VariantDto {
 	public VariantDto() {
 		super();
 	}
-	public VariantDto(Long varId, String name, String desc, boolean active, Long cateId, String cateName) {
+	public VariantDto(Long varId, String name, String description, boolean active, Long cateId, String cateName) {
 		super();
 		this.varId = varId;
 		this.name = name;
-		this.desc = desc;
+		this.description = description;
 		this.active = active;
 		this.cateId = cateId;
 		this.cateName = cateName;
@@ -34,11 +34,11 @@ public class VariantDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDesc() {
-		return desc;
+	public String getDescription() {
+		return description;
 	}
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public boolean isActive() {
 		return active;

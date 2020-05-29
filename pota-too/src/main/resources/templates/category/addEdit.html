@@ -5,7 +5,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h3 class="modal-title">Add Edit Product</h3>
+				<h3 class="modal-title">Add Category</h3>
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
@@ -13,7 +13,12 @@
 			</div>
 			<div class="modal-body">
 				<form id="formAddEdit">
-					<div class="form-group" method="post">
+					<div class="form-group">
+						<label for="title">Category Id :</label><br> <input
+							class="form-control" type="text" readOnly
+							placeholder="generated id" id="id">
+					</div>
+					<div class="form-group">
 						<label for="title">Name :</label><br> <input
 							class="form-control" type="text"
 							placeholder="name" id="name">
@@ -28,7 +33,8 @@
 				<div class="modal-footer">
 						<button type="button" class="btn btn-secondary"
 							data-dismiss="modal">Close</button>
-						<button type="button"  onclick="saveMe();" class="btn btn-primary">Saves</button>
+						<button type="button"  onclick="saveAction();" 
+							class="btn btn-primary">Save</button>
 						
 					</div>
 			</div>

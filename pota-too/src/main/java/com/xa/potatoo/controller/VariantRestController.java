@@ -32,7 +32,7 @@ public class VariantRestController {
 		return new ResponseEntity<>(variantService.findVariants(),HttpStatus.OK);
 	}
 	
-	@PostMapping("/add")
+	@PostMapping("/create")
 	public ResponseEntity<?> addVariant(@RequestBody Variant variant){
 		return new ResponseEntity<>(variantService.save(variant),HttpStatus.OK);
 	}

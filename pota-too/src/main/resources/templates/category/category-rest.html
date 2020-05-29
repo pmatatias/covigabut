@@ -41,46 +41,6 @@
 				<div class="modal-body">
                     <!-- Content will be loaded here...  -->
                 </div>
-                <!-- Modal add -->
-				<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
-				aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h3 id="h3Title" class="modal-title">Add Category</h3>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<form id="formAddEdit">
-								<div class="form-group">
-									<label for="title">Id :</label><br> <input
-										class="form-control" type="text"
-										placeholder="id" id="id">
-								</div>
-								<div class="form-group">
-									<label for="title">Name :</label><br> <input
-										class="form-control" type="text"
-										placeholder="name" id="name">
-								</div>
-								<div class="form-group">
-									<label for="name">Description :</label><br> <input
-										class="form-control" type="text" 
-										placeholder="description" id="description">
-								</div>
-								
-							</form>
-							<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">Close</button>
-									<button type="button" id="saveBtn" class="btn btn-primary">Saves</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 
 <script>
  $('document').ready(function(){
@@ -132,16 +92,15 @@
  	$("#btnNew").click(function(e){
  		actionType= 'new';
  		$.ajax({
- 			url : '/rest/category/add',
+ 			url : '/rest/category/modalNew',
  			type : 'get',
- 			dataType : 'hmtl',
+ 			dataType : 'html',
  			success : (response)=> {
  				console.log (response);
- 				$('.modal-body').hmtl(response);
+ 				$('.modal-body').html(response);
  				$("#h3Title").text("Add Category");
  				$("#formAddEdit")[0].reset();
  				$("#modalAdd").modal("show");
- 				
  			},
  			error:(err)=>{
  				console.log(err);
@@ -168,7 +127,7 @@
  				
  		}
  		$.ajax({
- 			url:'/api/category/update',
+ 			url:'/api/category/add',
  			type: 'post',
  			contentType : 'application/json',
  			data : JSON.stringify(data),
@@ -199,9 +158,9 @@
  				description: $("#description").val()	
  		}
  		
-		console.log(JSON.stringify(data))
+		console.log(JSON.stringify(data));
  		$.ajax({
- 			url:'/api/category/update/',
+ 			url:'/api/category/update',
  			type: 'put',
  			contentType : 'application/json',
  			data : JSON.stringify(data),
@@ -256,40 +215,39 @@
  	});
  	 */
  	function editAction(e){
- 		
- 		actionType ='edit';
- 		$("#h3Title").text("Edit Category");
- 		
+ 		actionType = 'edit';
  		$.ajax({
- 			url:'/rest/category/add',
- 			type: 'get',
- 			contentType:'html',
- 			success:(response)=>{
+ 			url:'/rest/category/modalNew',
+ 			type:'get',
+ 			dataType: 'html',
+ 			success: (response)=>{
  				$.ajax({
- 					url : '/api/category/edit/'+e.value,
- 					type : 'get',
+ 					url : '/api/variant/edit/'+ e.value,
+ 					type: 'get',
  					contentType : 'application/json',
  					success : (result)=> {
  						console.log(result);
+ 						// call modal-body untuk mengupdate element di html
  						$('.modal-body').html(response);
- 						console.log ($("#name").val());
- 						$("#id").val(result[0].id);
- 		 				$("#name").val(result[0].name)
- 		 				$("#description").val(result[0].description)
- 					
- 					
-	 	 				$("#h3Title").text("Edit Category");
-	 					$("#modalAdd").modal("show");
+ 						// update tiap element di hmtl
+ 						$('#id').val(result[0].id);
+ 						$('#name').val(result[0].name);
+ 						$('#description').val(result[0].description);
+ 						
+ 						$("#h3Title").text("Edit Category");
+ 						$("#modalAdd").modal("show");
+ 						
  					},
- 					error:(err)=>{
-						console.log(err);
+ 					error: (err)=> {
+ 						console.log(err);
  					}
- 				
- 				});							
+ 				});
+ 		
  			},
- 			error: (err)=>{
+ 			error:(err)=>{
  				console.log(err);
  			}
+ 			
  		});
  	}
  	
@@ -306,8 +264,8 @@
  		}).then((result)=>{
  			if(result.value){
  				$.ajax({
- 					url:'/api/category/updateIsDelete/'+e.value,
- 					type: 'get',
+ 					url:'/api/category/delete/'+e.value,
+ 					type: 'delete',
  					dataType: 'html',
  					success: (response)=>{
 

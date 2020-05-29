@@ -1,5 +1,6 @@
 package com.xa.potatoo.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +24,7 @@ public class Variant extends SuperUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private Long id;
+	private Long varId;
 	
 	@Column(name = "name")
 	@NotBlank(message = "varian harus diisi")
@@ -33,36 +34,40 @@ public class Variant extends SuperUser {
 	private String description;
 	
 	@Column (name = "is_active")
-	private boolean isActive;
+	private boolean active;
 	
-	@ManyToOne(fetch =FetchType.LAZY)
+	@ManyToOne(fetch =FetchType.LAZY,cascade = CascadeType.ALL)
 	@JsonBackReference
-	@JoinColumn(name = "category")
+	@JoinColumn(name = "varn_cate_id")
 	private Category category;
-	
-	
 	
 
 	public Variant() {
 		super();
 	}
 	
-	public Variant(@NotBlank(message = "varian harus diisi") String name, String description, boolean isActive,
+	
+
+
+	public Variant(Long varId, @NotBlank(message = "varian harus diisi") String name, String description, boolean active,
 			Category category) {
 		super();
+		this.varId = varId;
 		this.name = name;
 		this.description = description;
-		this.isActive = isActive;
+		this.active = active;
 		this.category = category;
 	}
 
 
-	public Long getId() {
-		return id;
+
+
+	public Long getVarId() {
+		return varId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setVarId(Long varId) {
+		this.varId = varId;
 	}
 
 	public String getName() {
@@ -81,12 +86,12 @@ public class Variant extends SuperUser {
 		this.description = description;
 	}
 
-	public boolean isActive() {
-		return isActive;
+	public boolean active() {
+		return active;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public Category getCategory() {

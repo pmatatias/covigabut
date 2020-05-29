@@ -34,10 +34,24 @@ public class HomeController {
 		return "category/category-rest.html";
 	}
 	
-	@GetMapping("/rest/category/add")
+	@GetMapping("/rest/category/modalNew")
 	public String showCategoryAdd() {
 		return "category/addEdit.html";
 	}
 	
+	@GetMapping("/rest/variant")
+	public String showRestVariant() {
+		return "variant/variant.html";
+	}
+	@GetMapping("/rest/variant/add")
+	public String showVariantAddEdit() {
+		return "variant/addEdit.html";
+	}
+	
+	
+	@GetMapping("/rest/product")
+	public String showRestProduct() {
+		return "product/product.html";
+	}
 	
 }

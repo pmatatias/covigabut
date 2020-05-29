@@ -1,0 +1,331 @@
+<!Doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	data-layout-decorate ="~{fragments/layout}">
+<head>
+	<title>Variant</title>
+</head>
+<body>
+
+<div layout:fragment="content" style="padding-top:10px;">
+
+	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-0 border-bottom">
+		<h1 class="h2">Variant</h1>
+		<div class="btn-toolbar mb-2 mb-md-0">
+			<div class="btn-group mr-2">
+				<button type="button" id="btnNew"
+					class="btn btn-sm btn-outline-secondary">New</button>
+			</div>
+			<div class="form-group mx-sm-3 mb-2 col-xs-2">
+				<input type="text" class="form-control" id="inputSearch"
+					placeholder="Search Variant Name">
+			</div>
+			<button type="button" class="btn btn-sm btn-outline-secondary" id="btnSearch">Search</button>
+		</div>
+	</div>
+	<!-- - fill this one -->
+	<div class="table-responsive">
+		<table class="table table-striped table-sm">
+			<thead>
+				<tr>
+					<th>Variant Id</th>
+					<th>Name</th>
+					<th>Category Name</th>
+					<th>Description</th>
+					<th>Active</th>
+				</tr>
+			</thead>
+			<tbody id="tbody-data">
+				</tbody>
+		</table>
+	</div>
+		<div class="modal-body">
+		<!-- Content will be loaded here...  -->
+	</div>
+
+<script>
+	$('document').ready(function(){
+		loadData();
+	
+	});
+	
+	function loadData(){
+		$.ajax({
+			url : "/api/variant/fetchDto",
+			type: 'get',
+			contentType: 'application/json',
+			success :(respond)=>{
+				console.log(respond);
+				generateTable(respond);
+			},
+			error:()=>{
+				console.log('Failed to fetch Data');
+			}
+				
+		});
+	}
+	
+	$("#inputSearch").on("keydown",function(e){
+		if(e.which == 13){
+			paramName = $("#inputSearch").val();
+			
+			$.ajax({
+				url: '/api/variant/searchVariantName?name='+paramName+'&description='+paramName,
+				type:'get',
+				contentType: 'application/json',
+				success:(respond)=>{
+					generateTable(respond);
+				},
+				error:()=>{
+					console.log('Failed to load data');
+				}
+			});
+			
+		}	
+	});
+	
+	$("#btnSearch").click(function(e){
+		paramName = $("#inputSearch").val();
+		$.ajax({
+			url:'/api/variant/searchVariantName?name='+paramName+'&description='+paramName,
+			type: 'get',
+			contentType: 'application/json',
+			success:(respond)=>{
+				generateTable(respond);
+			},
+			error:()=>{
+				console.log('failed to load data');
+			}
+		});
+	});
+
+	function getCategory(cateId){
+		$.ajax({
+			url:'/api/category/',
+			type:'get',
+			contentType:"application/json",
+			success: function(response){
+				var optValue="";
+				optValue += `<option value="">-Select-</option>`;
+				response.map((cate)=>{
+					optValue += `<option value="${cate.id}">${cate.name}</option>`;
+				});
+				$("#category").html(optValue);
+				
+				console.log(cateId);
+				$('#category').val(cateId);
+			},
+			error: function(){
+				console.log('failed to fetch data')
+			}
+		});
+	}
+	
+	
+	// generate table
+	function generateTable(resdata){
+		var tr;
+		// jquery search for variant_body id
+		$('#tbody-data').html('');
+		 	tbody = $('#tbody-data');
+		 	resdata.map((res)=>{
+		 		tr = $('<tr/>');
+		 		
+		 		var actions = '<div class="input-group-btn">' +
+		         '            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action' +
+		         '                <span class="fa fa-caret-down"></span></button>' +
+		         '            <ul class="dropdown-menu">' +
+		         '                <li onclick="editAction(this)" value='+res.varId+'><a href="#">Edit</a></li>' +
+		         '                <li onclick="deleteAction(this)" value='+res.varId+'><a href="#">Delete</a></li>\n' +
+		         '            </ul>\n' +
+		         '        </div>';
+		         
+		         tr.append("<td>" + res.varId+ "</td>");
+		         tr.append("<td>" + res.name+ "</td>");
+		         tr.append("<td>" + res.cateName+ "</td>");
+		         tr.append("<td>" + res.description+"</td>");
+		         tr.append("<td>" + res.active+ "</td>");
+		         tr.append("<td>" + actions+ "</td>");
+		         
+		         $("#tbody-data").append(tr);
+		 		
+		 	});
+	}
+	
+	
+	$("#btnNew").click(function(e){
+		actionType = 'new';
+		$.ajax({
+			url:'/rest/variant/add',
+			type:'get',
+			dataType:'html',
+			success:(response)=>{
+				console.log(response);
+				$('.modal-body').html(response);
+				getCategory();
+				$("#h3Title").text("Add variant");
+				$("#formAddEdit")[0].reset();
+				$("#modalAdd").modal("show");
+			},
+			error:(err)=>{
+				console.log(err);
+			}	
+		});
+	});
+	
+	function saveAction(e){
+		if(actionType === 'new'){
+			insertData();
+		}else if (actionType === 'edit'){
+			updateData();
+		}
+		event.preventDefault()
+	}
+	
+	
+	function insertData(){
+		let data = {
+				name :$("#name").val(),
+				description:$("#description").val(),
+				active: $("#active").is(':checked')===true ? true : false,
+				category:{
+					id: $("#category").val()
+				}				
+		}
+		
+		$.ajax({
+			url : '/api/variant/create',
+			type: 'post',
+			contentType: 'application/json',
+			data: JSON.stringify(data),
+			success : (respond)=>{
+				loadData();
+				$('#modalAdd').modal('hide');
+				
+				Swal.fire({
+	           		  position: 'top-center',
+	           		  icon: 'success',
+	           		  width: 300,
+	           		  title: 'Your work has been saved',
+	           		  showConfirmButton: false,
+	           		  timer: 1500
+	           		});
+			},
+			error:()=>{
+				console.log('failed to save data');
+			}
+		});
+		
+	};
+	
+	function updateData(){
+		console.log('update data');
+		let data = {
+				varId : $('#varId').val(),
+				name: $('#name').val(),
+				description:$('#description').val(),
+				active: $('#active').is(':checked')=== true ? true : false,
+				category:{
+					id : $("category").val()
+				}
+		}
+		
+		console.log(JSON.stringify(data));
+		$.ajax({
+			url: '/api/variant/put',
+			type : 'put',
+			contentType : 'application/json',
+			data : JSON.stringify(data),
+			success : (respond)=>{
+				loadData();
+				$('#modalAdd').modal('hide');
+				Swal.fire({
+	           		  position: 'top-center',
+	           		  icon: 'success',
+	           		  width: 300,
+	           		  title: 'Your work has been saved',
+	           		  showConfirmButton: false,
+	           		  timer: 1500
+	           		});
+			},
+			error:()=>{
+				console.log('failed to save data');
+			}			
+		});
+		
+	};
+	
+	
+	function editAction(e){
+		actionType = 'edit';
+		$.ajax({
+			url:'/rest/variant/add',
+			type:'get',
+			dataType: 'html',
+			success: (response)=>{
+				$.ajax({
+					url : '/api/variant/editDto/'+ e.value,
+					type: 'get',
+					contentType : 'application/json',
+					success : (result)=> {
+						console.log(result);
+						// call modal-body untuk mengupdate element di html
+						$('.modal-body').html(response);
+						// update tiap element di hmtl
+						$('#varId').val(result[0].varId);
+						$('#name').val(result[0].name);
+						$('#description').val(result[0].description);
+						if(result[0].active === true){
+							$("#active").prop("checked",true);
+						}else{
+							$("#active").prop("checked",false);
+						}
+						$("#h3Title").text("Edit Variant");
+						$("#modalAdd").modal("show");
+						getCategory(result[0].cateId);
+						
+					},
+					error: (err)=> {
+						console.log(err);
+					}
+				});
+		
+			},
+			error:(err)=>{
+				console.log(err);
+			}
+			
+		});
+	}
+	
+	function deleteAction(e){
+		Swal.fire({
+			  title: 'Are you sure?',
+			  text: "You won't be able to revert this!",
+			  icon: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Yes, delete it!'
+		}).then((result)=> {
+			if (result.value){
+				$.ajax({
+					url :'/api/variant/updateIsDelete/'+e.value,
+					type:'get',
+					dataType:'html',
+					success: (response)=>{
+						console.log(response);
+						location.reload();
+					},
+					error:(err)=>{
+						location.reload();
+						alert('failed to delete data');
+					}
+				});
+			}
+		})
+	}
+</script>
+</div>
+</body>
+</html>

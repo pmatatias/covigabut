@@ -12,17 +12,17 @@ import com.xa.potatoo.models.Variant;
 public interface VariantRepo  extends JpaRepository<Variant,Long>{
 	
 	@Query(value = "select new com.xa.potatoo.model.dto.VariantDto(v.id,"
-			+"v.name,v.description,v.isActive,c.id,c.name)"
+			+"v.name,v.description,v.active,c.id,c.name)"
 			+"from Variant v join Category c on v.category.id = c.id where v.isDelete=false")
 	List<VariantDto> queryVariant();
 	
 	@Query(value = "select new com.xa.potatoo.model.dto.VariantDto(v.id,"
-			+"v.name,v.description,v.isActive,c.id,c.name)"
+			+"v.name,v.description,v.active,c.id,c.name)"
 			+"from Variant v join Category c on v.category.id = c.id and v.id=?1")
 	List<VariantDto> queryVariantByCategoryId(Long cateId);
 	
 	@Query(value = "select new com.xa.potatoo.model.dto.VariantDto(v.id,"
-			+"v.name,v.description,v.isActive,c.id,c.name)"
+			+"v.name,v.description,v.active,c.id,c.name)"
 			+"from Variant v join Category c on v.category.id=c.id"
 			+"where (v.name like %:name% or v.description like %:description%) and v.isDelete=false")
 	List<VariantDto> queryVariantByName(String name, String desc);
